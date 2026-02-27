@@ -6,7 +6,7 @@ from unihttp.omitted import Omitted as UniOmitted
 _OmittedValueT = TypeVar("_OmittedValueT")
 
 Omitted = UniOmitted
-Omittable: TypeAlias = _OmittedValueT | Omitted  # noqa: UP040
+Omittable: TypeAlias = _OmittedValueT | Omitted
 
 
 def is_omitted(value: Any) -> TypeIs[Omitted]:

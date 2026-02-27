@@ -1,3 +1,5 @@
+# ruff: noqa: E402
+
 import warnings
 
 warnings.warn(

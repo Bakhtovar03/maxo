@@ -21,6 +21,7 @@ class AttachmentFilter(BaseFilter[MessageCreated]):
             if attachment.type == self._attachment_type:
                 return True
 
+        # ruff: noqa: SIM103
         if self._attachment_type == AttachmentType.TEXT and update.message.body.text:
             return True
 

@@ -176,6 +176,7 @@ ignore = [
     "PLR1704", # https://docs.astral.sh/ruff/rules/redefined-argument-from-local/
     "PLW2901", # https://docs.astral.sh/ruff/rules/redefined-loop-name/
     "ERA001", # https://docs.astral.sh/ruff/rules/commented-out-code/  # Удалить после починки всего
+    "UP040", # https://docs.astral.sh/ruff/rules/non-pep695-type-alias/  # Адаптикс с ним не работает
 ]
 
 [tool.ruff.lint.per-file-ignores]
