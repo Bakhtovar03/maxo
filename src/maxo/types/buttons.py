@@ -1,4 +1,3 @@
-from maxo.types.button import Button
 from maxo.types.callback_button import CallbackButton
 from maxo.types.chat_button import ChatButton
 from maxo.types.link_button import LinkButton
@@ -15,5 +14,4 @@ InlineButtons = (
     | OpenAppButton
     | MessageButton
     | ChatButton
-    | Button
 )
