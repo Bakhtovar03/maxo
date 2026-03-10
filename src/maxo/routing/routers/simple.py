@@ -12,7 +12,7 @@ from maxo.routing.middlewares.state import (
 from maxo.routing.observers import SignalObserver, UpdateObserver
 from maxo.routing.observers.state import EmptyObserverState, StartedObserverState
 from maxo.routing.routers.state import EmptyRouterState, StartedRouterState
-from maxo.routing.sentinels import UNHANDLED, SkipHandler
+from maxo.routing.sentinels import UNHANDLED
 from maxo.routing.signals.shutdown import AfterShutdown, BeforeShutdown
 from maxo.routing.signals.startup import AfterStartup, BeforeStartup
 from maxo.routing.updates import (
@@ -144,11 +144,7 @@ class Router(BaseRouter):
         return await chain_middlewares(ctx)
 
     async def _trigger(self, ctx: Ctx, *, observer: Observer) -> Any:
-        try:
-            result = await observer.handler_lookup(ctx)
-        except SkipHandler:
-            result = UNHANDLED
-
+        result = await observer.handler_lookup(ctx)
         if result is UNHANDLED:
             return await self.trigger_child(ctx)
         return result

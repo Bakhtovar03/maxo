@@ -12,7 +12,7 @@ from maxo.routing.middlewares.fsm_context import FSMContextMiddleware
 from maxo.routing.middlewares.update_context import UpdateContextMiddleware
 from maxo.routing.observers import UpdateObserver
 from maxo.routing.routers.simple import Router
-from maxo.routing.sentinels import UNHANDLED
+from maxo.routing.sentinels import UNHANDLED, SkipHandler
 from maxo.routing.signals.base import BaseSignal
 from maxo.routing.signals.update import MaxoUpdate
 from maxo.routing.updates.base import BaseUpdate
@@ -108,8 +108,14 @@ class Dispatcher(Router):
         return await self.trigger(ctx)
 
     async def _feed_update_handler(self, update: MaxoUpdate[Any], ctx: Ctx) -> Any:
-        ctx["update"] = update.update
-        return await self.trigger(ctx)
+        ctx_copy = Ctx(dict(ctx))
+        ctx_copy["update"] = update.update
+
+        result = await self.trigger(ctx_copy)
+        if result is UNHANDLED:
+            raise SkipHandler
+
+        return result
 
     async def _emit_before_startup_handler(self) -> None:
         validate_router_graph(self)

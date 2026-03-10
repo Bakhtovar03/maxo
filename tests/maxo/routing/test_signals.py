@@ -10,6 +10,7 @@ from maxo.routing.signals import (
     AfterStartup,
     BeforeShutdown,
     BeforeStartup,
+    MaxoUpdate,
 )
 from maxo.routing.updates.message_created import MessageCreated
 from maxo.types import Message, MessageBody, Recipient, User
@@ -113,3 +114,21 @@ async def test_included_router_signals() -> None:
         *(["before_shutdown"] * 2),
         *(["after_shutdown"] * 2),
     ]
+
+
+@pytest.mark.asyncio
+async def test_dp_update_handler(update: MessageCreated, bot) -> None:
+    dp = Dispatcher()
+
+    triggered = False
+
+    @dp.update()
+    async def update_handler(_) -> None:
+        nonlocal triggered
+        triggered = True
+
+    await dp.feed_signal(BeforeStartup())
+    await dp.feed_signal(AfterStartup())
+
+    await dp.feed_max_update(MaxoUpdate(update=update), bot)
+    assert triggered

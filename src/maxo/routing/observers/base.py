@@ -8,7 +8,7 @@ from maxo.routing.interfaces import Filter, Handler, Observer
 from maxo.routing.interfaces.observer import ObserverState
 from maxo.routing.middlewares.manager import MiddlewareManagerFacade
 from maxo.routing.observers.state import EmptyObserverState
-from maxo.routing.sentinels import UNHANDLED
+from maxo.routing.sentinels import UNHANDLED, SkipHandler
 from maxo.routing.updates.base import BaseUpdate
 
 _UpdateT = TypeVar("_UpdateT", bound=BaseUpdate)
@@ -79,7 +79,10 @@ class BaseObserver(Observer[_UpdateT, _HandlerT, _HandlerFnT], ABC):
 
         for handler in self._handlers:
             if await handler.execute_filter(ctx):
-                return await self.execute_handler(ctx, handler)
+                try:
+                    return await self.execute_handler(ctx, handler)
+                except SkipHandler:
+                    continue
 
         return UNHANDLED
 
