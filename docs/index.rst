@@ -131,6 +131,7 @@ Contributors
    pages/event-handling/errors
    pages/event-handling/signals
    pages/event-handling/long-polling
+   pages/event-handling/webhooks
 
 .. toctree::
    :maxdepth: 2
