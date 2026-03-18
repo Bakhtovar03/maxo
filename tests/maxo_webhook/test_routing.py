@@ -2,9 +2,7 @@ import pytest
 from yarl import URL
 
 from maxo import Bot
-from maxo.transport.webhook.routing import PathRouting
-from maxo.transport.webhook.routing.query import QueryRouting
-from maxo.transport.webhook.routing.static import StaticRouting
+from maxo.transport.webhook.routing import PathRouting, QueryRouting, StaticRouting
 
 from .fixtures import DummyBoundRequest, DummyRequest
 

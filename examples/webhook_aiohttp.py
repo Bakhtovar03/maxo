@@ -7,7 +7,7 @@ from maxo import Bot, Dispatcher
 from maxo.enums import TextFormat
 from maxo.routing.updates import MessageCreated
 from maxo.routing.utils import collect_used_updates
-from maxo.transport.webhook.adapters.aiohttp.adapter import AiohttpWebAdapter
+from maxo.transport.webhook.adapters.aiohttp import AiohttpWebAdapter
 from maxo.transport.webhook.engines import SimpleEngine, WebhookEngine
 from maxo.transport.webhook.routing import StaticRouting
 from maxo.transport.webhook.security import Security, StaticSecretToken

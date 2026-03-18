@@ -63,17 +63,19 @@ class LongPolling:
         limit: Omittable[int] = 100,
         marker: Omittable[int | None] = Omitted(),
         types: Omittable[Sequence[str]] = Omitted(),
+        auto_close_bot: bool = True,
         drop_pending_updates: bool = False,
         **workflow_data: Any,
     ) -> None:
         dispatcher = self._dispatcher
-        dispatcher.workflow_data.update(bot=bot, **workflow_data)
-
         types = list(types or collect_used_updates(self._dispatcher))
 
         async with self._lock:
+            dispatcher.workflow_data.update(bot=bot, **workflow_data)
+
             await dispatcher.feed_signal(BeforeStartup())
-            async with bot.context():
+
+            async with bot.context(auto_close=auto_close_bot):
                 loggers.dispatcher.info(
                     "Polling started for @%s id=%s",
                     bot.state.info.username,
