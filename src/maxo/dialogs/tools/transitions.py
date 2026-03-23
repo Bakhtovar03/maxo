@@ -26,21 +26,32 @@ def _widget_edges(
 ) -> None:
     from diagrams import Edge
 
+    def _safe_connect(color: str, to_state: State | None, *, style: str | None = None) -> None:
+        if to_state is None:
+            return
+        to_node = nodes.get(to_state)
+        if to_node is None:
+            return
+        edge = Edge(color=color, style=style) if style is not None else Edge(color=color)
+        nodes[current_state] >> edge >> to_node
+
     states = list(dialog.windows.keys())
     if isinstance(kbd, Start):
-        nodes[current_state] >> Edge(color="#338a3e") >> nodes[kbd.state]
+        _safe_connect("#338a3e", kbd.state)
     elif isinstance(kbd, SwitchTo):
-        nodes[current_state] >> Edge(color="#0086c3") >> nodes[kbd.state]
+        _safe_connect("#0086c3", kbd.state)
     elif isinstance(kbd, Next):
         idx = states.index(current_state)
-        nodes[current_state] >> Edge(color="#0086c3") >> nodes[states[idx + 1]]
+        next_state = states[idx + 1] if idx + 1 < len(states) else None
+        _safe_connect("#0086c3", next_state)
     elif isinstance(kbd, Back):
         idx = states.index(current_state)
-        nodes[current_state] >> Edge(color="grey") >> nodes[states[idx - 1]]
+        prev_state = states[idx - 1] if idx > 0 else None
+        _safe_connect("grey", prev_state)
     elif isinstance(kbd, Cancel):
         for from_, to_ in starts:
             if to_.group == current_state.group:
-                nodes[current_state] >> Edge(color="grey", style="dashed") >> nodes[from_]
+                _safe_connect("grey", from_, style="dashed")
 
 
 def _walk_keyboard(
