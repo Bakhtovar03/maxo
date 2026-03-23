@@ -36,29 +36,26 @@ async def on_detail(
     await manager.switch_to(MenuSG.detail)
 
 
-dialog = Dialog(
-    Window(
-        Const("Главное меню"),
-        Button(Const("Подробнее"), id="detail", on_click=on_detail),
-        state=MenuSG.main,
-    ),
-    Window(
-        Const("Детальная страница"),
-        Back(),
-        state=MenuSG.detail,
-    ),
-)
-
-key_builder = DefaultKeyBuilder(with_destiny=True)
-dp = Dispatcher(key_builder=key_builder)
-
-
-@dp.message_created(CommandStart())
 async def start_handler(
     message: MessageCreated,
     dialog_manager: DialogManager,
 ) -> None:
     await dialog_manager.start(MenuSG.main, mode=StartMode.RESET_STACK)
+
+
+def make_dialog() -> Dialog:
+    return Dialog(
+        Window(
+            Const("Главное меню"),
+            Button(Const("Подробнее"), id="detail", on_click=on_detail),
+            state=MenuSG.main,
+        ),
+        Window(
+            Const("Детальная страница"),
+            Back(),
+            state=MenuSG.detail,
+        ),
+    )
 
 
 def make_env() -> tuple[Dispatcher, BotClient, MockMessageManager]:
@@ -73,7 +70,7 @@ def make_env() -> tuple[Dispatcher, BotClient, MockMessageManager]:
         key_builder=key_builder,
     )
     test_dp.message_created.handler(start_handler, CommandStart())
-    test_dp.include(dialog)
+    test_dp.include(make_dialog())
     setup_dialogs(
         test_dp,
         message_manager=message_manager,
