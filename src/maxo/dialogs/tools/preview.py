@@ -31,15 +31,19 @@ from maxo.dialogs.api.protocols.manager import BaseDialogManager, DialogManager
 from maxo.dialogs.manager.manager_middleware import MANAGER_KEY
 from maxo.dialogs.setup import collect_dialogs
 from maxo.dialogs.utils import split_reply_callback
+from maxo import Bot
 from maxo.enums import AttachmentType
+from maxo.enums.chat_type import ChatType
 from maxo.fsm import State, StatesGroup
 from maxo.routing.interfaces import BaseRouter
 from maxo.routing.middlewares.update_context import (
     EVENT_FROM_USER_KEY,
     UPDATE_CONTEXT_KEY,
 )
-from maxo.types import Callback, CallbackButton, Chat, UpdateContext, User
+from maxo.types import Callback, CallbackButton, UpdateContext, User
 from maxo.types.message import Message
+from maxo.types.message_body import MessageBody
+from maxo.types.recipient import Recipient
 
 if TYPE_CHECKING:
     from maxo.dialogs.api.internal.widgets import Widget
@@ -77,12 +81,13 @@ class FakeManager(DialogManager):
     def __init__(self) -> None:
         self._event = DialogUpdateEvent(
             user=User(
-                id=1,
+                user_id=1,
                 is_bot=False,
                 first_name="Fake",
-                language_code="en",
+                last_activity_time=datetime(2024, 1, 1, tzinfo=UTC),
             ),
-            chat=Chat(id=1, type="private"),
+            recipient=Recipient(chat_type=ChatType.DIALOG, user_id=1),
+            bot=Bot("", warming_up=False),
             action=DialogAction.UPDATE,
             data={},
             intent_id=None,
@@ -283,7 +288,10 @@ async def create_button(
         return RenderButton(title=title, state=state.state)
     callback = Callback(
         id="1",
-        from_user=User(id=1, is_bot=False, first_name=""),
+        from_user=User(
+            user_id=1, is_bot=False, first_name="",
+            last_activity_time=datetime(2024, 1, 1, tzinfo=UTC),
+        ),
         chat_instance="",
         data=callback,
     )
@@ -305,18 +313,13 @@ async def render_input(
 ) -> RenderButton | None:
     if not simulate_events:
         return None
-    if content_type == AttachmentType.IMAGE:
-        data = {content_type: []}
-    else:
-        data = {content_type: "<stub>"}
-    message = Message(
-        message_id=1,
-        date=datetime.now(UTC),
-        chat=Chat(id=1, type="private"),
-        **data,
-    )
-    manager.set_state(state)
     try:
+        message = Message(
+            timestamp=datetime.now(UTC),
+            recipient=Recipient(chat_type=ChatType.DIALOG, user_id=1),
+            body=MessageBody(),
+        )
+        manager.set_state(state)
         await dialog._message_handler(message, dialog_manager=manager)
     except Exception:
         logger.debug("Input %s", content_type)
@@ -392,30 +395,18 @@ async def create_window(
     dialog: "Dialog",
     simulate_events: bool,
 ) -> RenderWindow:
-    if message.parse_mode is None or message.parse_mode == "None":
-        text = html.escape(message.text)
-    else:
-        text = message.text
+    raw_text = message.text or ""
+    text = html.escape(raw_text) if message.parse_mode is None else raw_text
 
-    # TODO: Нужно ли? Починить или убрать
-    if isinstance(message.reply_markup, CallbackButton):
+    if message.keyboard is not None:
         keyboard = await render_inline_keyboard(
             state,
-            message.reply_markup,
+            message.keyboard,  # type: ignore[arg-type]
             manager,
             dialog,
             simulate_events,
         )
         reply_keyboard = []
-    # elif isinstance(message.reply_markup, ReplyKeyboardMarkup):
-    #     keyboard = []
-    #     reply_keyboard = await render_reply_keyboard(
-    #         state,
-    #         message.reply_markup,
-    #         manager,
-    #         dialog,
-    #         simulate_events,
-    #     )
     else:
         keyboard = []
         reply_keyboard = []
@@ -483,7 +474,7 @@ async def render_preview_content(
         for dialog in collect_dialogs(router)
     ]
     env = Environment(
-        loader=PackageLoader("maxo_dialog.tools"),
+        loader=PackageLoader("maxo.dialogs.tools"),
         autoescape=select_autoescape(),
     )
     template = env.get_template("message.html")
@@ -496,5 +487,5 @@ async def render_preview(
     simulate_events: bool = False,
 ) -> None:
     res = await render_preview_content(router, simulate_events)
-    async with anyio.open_file(Path(file), "w", encoding="utf-8") as f:
+    async with await anyio.open_file(Path(file), "w", encoding="utf-8") as f:
         await f.write(res)
