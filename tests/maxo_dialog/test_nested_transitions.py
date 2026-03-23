@@ -113,6 +113,9 @@ async def test_start(
     assert first_message.body.text == "Third"
     assert first_message.body.reply_markup
 
+    # Cascade-start emits one message per dialog (Main→Secondary→Third).
+    # We iterate in reverse to find the innermost message that responds to Cancel,
+    # because only the active (innermost) dialog processes the callback.
     second_message = None
     for candidate in reversed(startup_messages):
         message_manager.reset_history()

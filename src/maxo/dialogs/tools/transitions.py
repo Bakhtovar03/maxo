@@ -100,8 +100,15 @@ def render_transitions(
 
     Requires: pip install maxo[preview] and system graphviz (brew install graphviz).
     """
-    diagrams_module = importlib.import_module("diagrams")
-    diagrams_custom_module = importlib.import_module("diagrams.custom")
+    try:
+        diagrams_module = importlib.import_module("diagrams")
+        diagrams_custom_module = importlib.import_module("diagrams.custom")
+    except ImportError as exc:
+        raise ImportError(
+            "Install maxo[preview] and system graphviz to use render_transitions(). "
+            "Run: pip install 'maxo[preview]' && brew install graphviz (macOS) "
+            "or apt-get install graphviz (Linux).",
+        ) from exc
     window_module = importlib.import_module("maxo.dialogs.window")
     cluster_factory = diagrams_module.Cluster
     diagram_factory = diagrams_module.Diagram

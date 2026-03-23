@@ -62,16 +62,20 @@ VK Max и без подключения к сети. Тесты выполняю
     from maxo.dialogs.test_tools import BotClient, MockMessageManager
     from maxo.dialogs.test_tools.memory_storage import JsonMemoryStorage
     from maxo.fsm.key_builder import DefaultKeyBuilder
+    from maxo.fsm.storages.memory import SimpleEventIsolation
 
     storage = JsonMemoryStorage()
     message_manager = MockMessageManager()
+    key_builder = DefaultKeyBuilder(with_destiny=True)
+    event_isolation = SimpleEventIsolation(key_builder=key_builder)
 
     dp = Dispatcher(
         storage=storage,
-        key_builder=DefaultKeyBuilder(with_destiny=True),
+        key_builder=key_builder,
+        events_isolation=event_isolation,
     )
     dp.include(my_dialog)
-    setup_dialogs(dp, message_manager=message_manager)
+    setup_dialogs(dp, message_manager=message_manager, events_isolation=event_isolation)
 
     client = BotClient(dp)
 
