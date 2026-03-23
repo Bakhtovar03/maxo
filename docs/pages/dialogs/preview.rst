@@ -128,7 +128,7 @@ Web-превью
 Полный пример
 =============
 
-Рабочий пример с минимальным диалогом (два состояния, переход по кнопке), который
-демонстрирует настройку test_tools и может служить основой для передачи роутера
-в ``render_transitions``:
-:download:`examples/dialogs_testing.py <../../../examples/dialogs_testing.py>`
+Рабочий пример с диалогом из двух групп состояний: демонстрирует генерацию
+HTML-превью и PNG-диаграммы переходов, а также настройку роутера для команды
+``maxo-dialog-preview``:
+:download:`examples/dialogs_preview.py <../../../examples/dialogs_preview.py>`

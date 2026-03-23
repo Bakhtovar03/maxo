@@ -107,13 +107,13 @@ router.include(make_settings_dialog())
 
 
 async def main() -> None:
-    from maxo.dialogs.tools.preview import render_preview
-    from maxo.dialogs.tools.transitions import render_transitions
+    from maxo.dialogs.tools.preview import render_preview  # noqa: PLC0415
+    from maxo.dialogs.tools.transitions import render_transitions  # noqa: PLC0415
 
     try:
         await render_preview(router, "preview.html")
         print("HTML-превью сохранено: preview.html")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"HTML-превью недоступно: {e}")
 
     render_transitions(router, title="Пример бота", filename="maxo_dialog")

@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any, Optional
 import anyio
 from jinja2 import Environment, PackageLoader, select_autoescape
 
+from maxo import Bot
 from maxo.dialogs.api.entities import (
     EVENT_CONTEXT_KEY,
     AccessSettings,
@@ -31,7 +32,6 @@ from maxo.dialogs.api.protocols.manager import BaseDialogManager, DialogManager
 from maxo.dialogs.manager.manager_middleware import MANAGER_KEY
 from maxo.dialogs.setup import collect_dialogs
 from maxo.dialogs.utils import split_reply_callback
-from maxo import Bot
 from maxo.enums import AttachmentType
 from maxo.enums.chat_type import ChatType
 from maxo.fsm import State, StatesGroup
@@ -104,7 +104,7 @@ class FakeManager(DialogManager):
             ),
             EVENT_FROM_USER_KEY: self._event.user,
             EVENT_CONTEXT_KEY: EventContext(
-                bot=None,
+                bot=self._event.bot,
                 chat=None,
                 chat_type=self._event.recipient.chat_type,
                 chat_id=self._event.recipient.chat_id,
@@ -270,9 +270,9 @@ def create_photo(media: MediaAttachment | None) -> str | None:
     if media.url:
         return media.url
     if media.path:
-        return media.path
-    if media.file_id:
-        return str(media.file_id)
+        return str(media.path)
+    if media.media_id:
+        return str(media.media_id)
     return None
 
 
