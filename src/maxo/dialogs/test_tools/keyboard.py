@@ -44,7 +44,7 @@ class InlineButtonPositionLocator:
         if not message.body.keyboard:
             return None
         try:
-            return message.body.keyboard.payload.buttons[self.row][self.column]
+            return message.body.keyboard.buttons[self.row][self.column]
         except IndexError:
             return None
 
