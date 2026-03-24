@@ -166,6 +166,18 @@ class UpdateContextMiddleware(BaseMiddleware[MaxoUpdate[Any]]):
             chat_id = update.chat_id
             user_id = update.user_id
             chat_type = None
+        else:
+            # Deferred import to avoid circular dependency:
+            # update_context → dialogs → fsm → update_context
+            from maxo.dialogs.api.entities import DialogUpdateEvent  # noqa: PLC0415
+
+            if isinstance(update, DialogUpdateEvent):
+                user_id = update.user.user_id
+                user = update.user
+                chat_id = (
+                    update.recipient.chat_id or update.recipient.user_id
+                )
+                chat_type = update.recipient.chat_type
 
         update_context = UpdateContext(
             chat_id=chat_id,
