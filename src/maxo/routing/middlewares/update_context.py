@@ -33,7 +33,7 @@ class UpdateContextMiddleware(BaseMiddleware[MaxoUpdate[Any]]):
     """
     Мидлварь, заполняющий контекст апдейта (chat_id, user_id.
 
-    При обогащении — chat, user.
+    При обогащении - chat, user.
 
     Args:
         enrich: при True запрашивать чат и при необходимости пользователя через Bot API.

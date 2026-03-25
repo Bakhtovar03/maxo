@@ -29,11 +29,11 @@
      -
    * - Подчёркнутый
      - ``<u>текст</u>``
-     - —
+     - -
      -
    * - Зачёркнутый
      - ``<s>текст</s>``
-     - —
+     - -
      -
    * - Моноширинный
      - ``<code>текст</code>``
@@ -61,8 +61,8 @@
 
    Упоминание работает только если текст ссылки является полным именем пользователя.
 
-   * ``<a href="max://user/1234567890">Иван Иванов</a>`` — сработает
-   * ``<a href="max://user/1234567890">Любой другой текст</a>`` — нет
+   * ``<a href="max://user/1234567890">Иван Иванов</a>`` - сработает
+   * ``<a href="max://user/1234567890">Любой другой текст</a>`` - нет
 
 TextFormat
 ==========
@@ -85,10 +85,10 @@ Text API (``maxo.utils.formatting``)
 Классы разметки
 ---------------
 
-* ``Text`` — базовый контейнер, принимает произвольные узлы
-* ``Bold``, ``Italic``, ``Underline``, ``Strikethrough``, ``Monospaced``, ``BlockQuote`` — обёртки форматирования
-* ``Link(*body, url="https://...")`` — ссылка
-* ``Mention("Полное имя", user_id=123)`` — упоминание (текст должен быть полным именем)
+* ``Text`` - базовый контейнер, принимает произвольные узлы
+* ``Bold``, ``Italic``, ``Underline``, ``Strikethrough``, ``Monospaced``, ``BlockQuote`` - обёртки форматирования
+* ``Link(*body, url="https://...")`` - ссылка
+* ``Mention("Полное имя", user_id=123)`` - упоминание (текст должен быть полным именем)
 
 .. code-block:: python
 
@@ -116,20 +116,20 @@ Text API (``maxo.utils.formatting``)
    # Markdown
    await facade.answer_text(text.as_markdown(), format=TextFormat.MARKDOWN)
 
-Метод ``.as_kwargs()`` возвращает ``{"text": "...", "format": None}`` — только текст без разметки
+Метод ``.as_kwargs()`` возвращает ``{"text": "...", "format": None}`` - только текст без разметки
 (entities не передаются). Подходит для отправки содержимого ``Text`` объекта как plain text.
 
 Вспомогательные функции
 ------------------------
 
-* ``as_line(*items, end="\\n", sep="")`` — строка с разделителем и ``\\n`` в конце
-* ``as_list(*items, sep="\\n")`` — элементы через ``\\n``
-* ``as_marked_list(*items, marker="- ")`` — список с маркером
-* ``as_numbered_list(*items, start=1, fmt="{}. ")`` — нумерованный список
-* ``as_section(title, *body)`` — секция с заголовком
-* ``as_marked_section(title, *body, marker="- ")`` — секция с маркированным списком
-* ``as_numbered_section(title, *body, start=1, fmt="{}. ")`` — секция с нумерованным списком
-* ``as_key_value(key, value)`` — строка вида ``<b>key:</b> value``
+* ``as_line(*items, end="\n", sep="")`` - строка с разделителем и ``\n`` в конце
+* ``as_list(*items, sep="\n")`` - элементы через ``\n``
+* ``as_marked_list(*items, marker="- ")`` - список с маркером
+* ``as_numbered_list(*items, start=1, fmt="{}. ")`` - нумерованный список
+* ``as_section(title, *body)`` - секция с заголовком
+* ``as_marked_section(title, *body, marker="- ")`` - секция с маркированным списком
+* ``as_numbered_section(title, *body, start=1, fmt="{}. ")`` - секция с нумерованным списком
+* ``as_key_value(key, value)`` - строка вида ``<b>key:</b> value``
 
 .. code-block:: python
 
