@@ -61,7 +61,7 @@ class TestTextDecoration:
             (
                 markdown_decoration,
                 MarkupElement(type=MarkupElementType.QUOTE, from_=0, length=4),
-                ">test",
+                "> test",
             ),
         ],
     )
