@@ -20,7 +20,7 @@ pytest tests/path/test_file.py::test_name -v   # один тест
 
 ## Архитектура
 
-```
+```text
 src/maxo/
   bot/         - клиент бота и методы API
   routing/     - Dispatcher, Router, Handler, Filter, Middleware, сигналы

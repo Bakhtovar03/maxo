@@ -116,8 +116,11 @@ async def main() -> None:
     except Exception as e:  # noqa: BLE001
         print(f"HTML-превью недоступно: {e}")
 
-    render_transitions(router, title="Пример бота", filename="maxo_dialog")
-    print("Диаграмма переходов сохранена: maxo_dialog.png")
+    try:
+        render_transitions(router, title="Пример бота", filename="maxo_dialog")
+        print("Диаграмма переходов сохранена: maxo_dialog.png")
+    except Exception as e:  # noqa: BLE001
+        print(f"Диаграмма переходов недоступна: {e}")
 
 
 if __name__ == "__main__":
