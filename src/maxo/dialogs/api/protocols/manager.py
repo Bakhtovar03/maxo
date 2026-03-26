@@ -12,6 +12,7 @@ from maxo.dialogs.api.entities import (
     Stack,
     StartMode,
 )
+from maxo.enums import ChatType
 from maxo.fsm import State
 
 if TYPE_CHECKING:
@@ -78,6 +79,7 @@ class BgManagerFactory(Protocol):
         chat_id: int,
         stack_id: str | None = None,
         load: bool = False,  # load chat and user
+        chat_type: ChatType = ChatType.CHAT,
     ) -> "BaseDialogManager":
         raise NotImplementedError
 

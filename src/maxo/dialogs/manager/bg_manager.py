@@ -21,7 +21,6 @@ from maxo.dialogs.manager.updater import Updater
 from maxo.dialogs.utils import is_user_loaded
 from maxo.enums import ChatType
 from maxo.fsm import State
-from maxo.routing.interfaces import BaseRouter
 from maxo.types import Recipient, User
 
 logger = logging.getLogger(__name__)
@@ -37,11 +36,12 @@ class BgManager(BaseDialogManager):
         intent_id: str | None,
         stack_id: str | None,
         load: bool = False,
+        chat_type: ChatType = ChatType.CHAT,
     ) -> None:
         self._event_context = EventContext(
             chat_id=chat_id,
             user_id=user.id,
-            chat_type=ChatType.CHAT,  # TODO: Узнать тип чата
+            chat_type=chat_type,
             user=user,
             chat=None,
             bot=bot,
@@ -76,7 +76,7 @@ class BgManager(BaseDialogManager):
             user=user,
             chat_id=chat_id,
             user_id=user_id,
-            chat_type=ChatType.CHAT,  # TODO: Узнать тип чата
+            chat_type=self._event_context.chat_type,
             chat=None,
         )
         if stack_id is None:
@@ -97,6 +97,7 @@ class BgManager(BaseDialogManager):
             intent_id=intent_id,
             stack_id=stack_id,
             load=load,
+            chat_type=new_event_context.chat_type,
         )
 
     def _base_event_params(self) -> dict[str, Any]:
@@ -201,8 +202,8 @@ class BgManager(BaseDialogManager):
 
 
 class BgManagerFactoryImpl(BgManagerFactory):
-    def __init__(self, router: BaseRouter) -> None:
-        self._router = router
+    def __init__(self, router: Dispatcher) -> None:
+        self._dp = router
 
     def bg(
         self,
@@ -211,6 +212,7 @@ class BgManagerFactoryImpl(BgManagerFactory):
         chat_id: int,
         stack_id: str | None = None,
         load: bool = False,
+        chat_type: ChatType = ChatType.CHAT,
     ) -> "BaseDialogManager":
         user = FakeUser(
             user_id=user_id,
@@ -225,8 +227,9 @@ class BgManagerFactoryImpl(BgManagerFactory):
             user=user,
             chat_id=chat_id,
             bot=bot,
-            dp=self._router,
+            dp=self._dp,
             intent_id=None,
             stack_id=stack_id,
             load=load,
+            chat_type=chat_type,
         )

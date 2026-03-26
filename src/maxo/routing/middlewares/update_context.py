@@ -28,6 +28,9 @@ UPDATE_CONTEXT_KEY: Final = "update_context"
 EVENT_FROM_USER_KEY: Final = "event_from_user"
 EVENT_CHAT_KEY: Final = "event_chat"
 
+# Подражание аиограму
+EVENT_CONTEXT_KEY: Final = "event_context"  # same as UPDATE_CONTEXT_KEY
+
 
 class UpdateContextMiddleware(BaseMiddleware[MaxoUpdate[Any]]):
     """
@@ -59,6 +62,7 @@ class UpdateContextMiddleware(BaseMiddleware[MaxoUpdate[Any]]):
         )
 
         ctx[UPDATE_CONTEXT_KEY] = update_context
+        ctx[EVENT_CONTEXT_KEY] = update_context
         if update_context.user is not None:
             ctx[EVENT_FROM_USER_KEY] = update_context.user
         if update_context.chat is not None:
@@ -116,6 +120,10 @@ class UpdateContextMiddleware(BaseMiddleware[MaxoUpdate[Any]]):
         ctx: Ctx,
         do_enrich: bool,
     ) -> UpdateContext:
+        # Deferred import to avoid circular dependency:
+        # update_context → dialogs → fsm → update_context
+        from maxo.dialogs.api.entities import DialogUpdateEvent  # noqa: PLC0415
+
         chat_id = None
         user_id = None
         chat_type: ChatType | None = None
@@ -166,6 +174,11 @@ class UpdateContextMiddleware(BaseMiddleware[MaxoUpdate[Any]]):
             chat_id = update.chat_id
             user_id = update.user_id
             chat_type = None
+        elif isinstance(update, DialogUpdateEvent):
+            user_id = update.user.user_id
+            user = update.user
+            chat_id = update.recipient.chat_id
+            chat_type = update.recipient.chat_type
 
         update_context = UpdateContext(
             chat_id=chat_id,

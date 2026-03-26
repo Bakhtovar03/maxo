@@ -581,6 +581,7 @@ class ManagerImpl(DialogManager):
             intent_id=intent_id,
             stack_id=stack_id,
             load=load,
+            chat_type=new_event_context.chat_type,
         )
 
     async def close_manager(self) -> None:

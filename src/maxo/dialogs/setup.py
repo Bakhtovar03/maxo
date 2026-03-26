@@ -1,6 +1,6 @@
 from collections.abc import Callable, Iterable
 
-from maxo import Ctx, Router
+from maxo import Ctx, Dispatcher, Router
 from maxo.dialogs.api.entities import (
     DialogStartEvent,
     DialogSwitchEvent,
@@ -238,7 +238,7 @@ def collect_dialogs(router: BaseRouter) -> Iterable[DialogProtocol]:
 
 
 def setup_dialogs(
-    router: Router,
+    router: Dispatcher,
     *,
     dialog_manager_factory: DialogManagerFactory | None = None,
     message_manager: MessageManagerProtocol | None = None,
