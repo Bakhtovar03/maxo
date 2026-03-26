@@ -1,3 +1,10 @@
+"""Test nested (cascade) dialog transitions.
+
+Verifies that a chain Main→Secondary→Third starts correctly via on_start
+callbacks, and that Cancel in the innermost dialog cascades back through
+the stack to the root dialog.
+"""
+
 from typing import Any
 
 import pytest
@@ -19,6 +26,7 @@ from maxo.fsm.state import State, StatesGroup
 from maxo.routing.filters import CommandStart
 from maxo.routing.signals import AfterStartup, BeforeStartup
 from maxo.routing.updates import MessageCreated
+
 
 
 class MainSG(StatesGroup):

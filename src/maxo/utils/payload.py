@@ -2,16 +2,14 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 from collections.abc import Callable
 
 
-PayloadScalar = str | int | float | bool
-
-
 def encode_payload(
-    payload: PayloadScalar,
+    payload: str,
     encoder: Callable[[bytes], bytes] | None = None,
 ) -> str:
-    payload_str = payload if isinstance(payload, str) else str(payload)
+    if not isinstance(payload, str):
+        payload = str(payload)
 
-    payload_bytes = payload_str.encode("utf-8")
+    payload_bytes = payload.encode("utf-8")
     if encoder is not None:
         payload_bytes = encoder(payload_bytes)
 

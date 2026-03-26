@@ -1,14 +1,14 @@
 import re
 from typing import Protocol
 
-from maxo.types import CallbackButton, Message
+from maxo.types import CallbackButton, InlineButtons, Message, MessageButton
 
 
 class InlineButtonLocator(Protocol):
     def find_button(
         self,
         message: Message,
-    ) -> CallbackButton | None:
+    ) -> InlineButtons | None:
         raise NotImplementedError
 
 
@@ -19,12 +19,12 @@ class InlineButtonTextLocator:
     def find_button(
         self,
         message: Message,
-    ) -> CallbackButton | None:
+    ) -> InlineButtons | None:
         if not message.body.keyboard:
             return None
         for row in message.body.keyboard.buttons:
             for button in row:
-                if not isinstance(button, CallbackButton):
+                if not isinstance(button, (CallbackButton, MessageButton)):
                     continue
                 if self.regex.fullmatch(button.text):
                     return button
@@ -42,12 +42,11 @@ class InlineButtonPositionLocator:
     def find_button(
         self,
         message: Message,
-    ) -> CallbackButton | None:
+    ) -> InlineButtons | None:
         if not message.body.keyboard:
             return None
         try:
-            button = message.body.keyboard.buttons[self.row][self.column]
-            return button if isinstance(button, CallbackButton) else None
+            return message.body.keyboard.buttons[self.row][self.column]
         except IndexError:
             return None
 
@@ -62,7 +61,7 @@ class InlineButtonDataLocator:
     def find_button(
         self,
         message: Message,
-    ) -> CallbackButton | None:
+    ) -> InlineButtons | None:
         if not message.body.keyboard:
             return None
         for row in message.body.keyboard.buttons:
