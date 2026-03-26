@@ -1,8 +1,8 @@
-"""Test nested (cascade) dialog transitions.
+"""Тест каскадных переходов между вложенными диалогами.
 
-Verifies that a chain Main→Secondary→Third starts correctly via on_start
-callbacks, and that Cancel in the innermost dialog cascades back through
-the stack to the root dialog.
+Проверяет, что цепочка Main→Secondary→Third корректно запускается через
+on_start колбэки, а Cancel во внутреннем диалоге каскадно возвращает
+управление к корневому диалогу.
 """
 
 from typing import Any
