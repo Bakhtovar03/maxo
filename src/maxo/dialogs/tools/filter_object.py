@@ -34,6 +34,8 @@ class CallableObject:
         return {k: kwargs[k] for k in self.params if k in kwargs}
 
     async def call(self, *args: Any, **kwargs: Any) -> Any:
+        # потому что update это первый аргумент в фильтрах и хендлерах
+        kwargs.pop("update", None)
         wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
         if self.awaitable:
             return await wrapped()
