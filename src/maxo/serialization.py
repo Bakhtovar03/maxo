@@ -158,6 +158,12 @@ def create_retort(
             )
         return method
 
+    def _load_datetime(time: int) -> datetime:
+        try:
+            return datetime.fromtimestamp(time / 1000, tz=UTC)
+        except ValueError:
+            return datetime.max.replace(tzinfo=UTC)
+
     retort = DEFAULT_RETORT.extend(
         recipe=[
             TAG_PROVIDERS,
@@ -183,7 +189,7 @@ def create_retort(
                 lambda x: x.to_request() if isinstance(x, Attachments) else x,
                 chain=Chain.FIRST,
             ),
-            loader(P[datetime], lambda x: datetime.fromtimestamp(x / 1000, tz=UTC)),
+            loader(P[datetime], _load_datetime),
         ],
     )
     if warming_up:
