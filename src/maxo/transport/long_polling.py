@@ -4,10 +4,12 @@ import time
 from collections.abc import AsyncIterator, Sequence
 from typing import Any
 
+from adaptix.load_error import LoadError
+
 from maxo import loggers
 from maxo.backoff import Backoff, BackoffConfig
 from maxo.bot.bot import Bot
-from maxo.omit import Omittable, Omitted
+from maxo.omit import Omittable, Omitted, is_defined
 from maxo.routing.dispatcher import Dispatcher
 from maxo.routing.signals.shutdown import AfterShutdown, BeforeShutdown
 from maxo.routing.signals.startup import AfterStartup, BeforeStartup
@@ -131,6 +133,14 @@ class LongPolling:
                     marker=marker,
                     types=types,
                 )
+            except LoadError:
+                loggers.dispatcher.exception(
+                    "Ошибка загрузки апдейта в модель. "
+                    "Сообщите об этой ошибке в https://github.com/K1rL3s/maxo/issues",
+                )
+                if is_defined(marker):
+                    marker += 1
+                continue
             except Exception as exception:  # noqa: BLE001
                 failed = True
                 loggers.dispatcher.exception(
@@ -165,7 +175,7 @@ class LongPolling:
 
             for update in result.updates:
                 if drop_pending_updates and update.timestamp.timestamp() < start_time:
-                    loggers.long_polling.debug("Skip update: %s", update)
+                    loggers.long_polling.debug("Skip pending update: %s", update)
                     continue
                 loggers.long_polling.debug("New update: %s", update)
                 yield MaxoUpdate(update=update, marker=result.marker)
