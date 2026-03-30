@@ -11,7 +11,6 @@
     brew install graphviz   # macOS
     apt-get install graphviz  # Linux
 """
-from __future__ import annotations
 
 import asyncio
 from typing import Any

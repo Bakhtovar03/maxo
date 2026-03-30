@@ -14,8 +14,12 @@ from typing import (
     overload,
 )
 
-from dishka import AsyncContainer
-from dishka.integrations.base import wrap_injection
+try:
+    from dishka import AsyncContainer
+    from dishka.integrations.base import wrap_injection
+except ImportError as e:
+    e.add_note("* Please run `pip install maxo[dishka]`")
+    raise
 
 from maxo.dialogs import Data, DialogManager
 from maxo.dialogs.api.entities import ChatEvent

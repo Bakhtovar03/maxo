@@ -1,14 +1,9 @@
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from ipaddress import IPv4Address, IPv6Address
-from typing import TYPE_CHECKING, Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
-if TYPE_CHECKING:
-    from collections.abc import Awaitable, Callable
-
-    from maxo.transport.webhook.adapters.base_mapping import MappingABC
+from maxo.transport.webhook.adapters.base_mapping import MappingABC
 
 R = TypeVar("R")
 

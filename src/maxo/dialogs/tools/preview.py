@@ -289,7 +289,9 @@ async def create_button(
     callback = Callback(
         callback_id="1",
         user=User(
-            user_id=1, is_bot=False, first_name="",
+            user_id=1,
+            is_bot=False,
+            first_name="",
             last_activity_time=datetime(2024, 1, 1, tzinfo=UTC),
         ),
         timestamp=datetime(2024, 1, 1, tzinfo=UTC),

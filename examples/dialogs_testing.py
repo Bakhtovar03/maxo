@@ -3,13 +3,10 @@
 Запуск: python examples/dialogs_testing.py
 Не требует токена бота или базы данных.
 """
-from __future__ import annotations
 
 import asyncio
-from typing import Any
 
 from maxo import Dispatcher
-from maxo.types import CallbackButton
 from maxo.dialogs import Dialog, DialogManager, StartMode, Window, setup_dialogs
 from maxo.dialogs.test_tools import BotClient, MockMessageManager
 from maxo.dialogs.test_tools.keyboard import InlineButtonTextLocator
@@ -21,7 +18,8 @@ from maxo.fsm.key_builder import DefaultKeyBuilder
 from maxo.fsm.storages.memory import SimpleEventIsolation
 from maxo.routing.filters import CommandStart
 from maxo.routing.signals import AfterStartup, BeforeStartup
-from maxo.routing.updates import MessageCreated
+from maxo.routing.updates import MessageCallback, MessageCreated
+from maxo.types import CallbackButton
 
 
 class MenuSG(StatesGroup):
@@ -30,8 +28,8 @@ class MenuSG(StatesGroup):
 
 
 async def on_detail(
-    callback: Any,
-    button: Any,
+    callback: MessageCallback,
+    button: Button,
     manager: DialogManager,
 ) -> None:
     await manager.switch_to(MenuSG.detail)
@@ -88,36 +86,43 @@ async def startup(dp: Dispatcher, client: BotClient) -> None:
 
 
 async def demo_render_window() -> None:
-    test_dp, client, mm = make_env()
+    test_dp, client, message_manager = make_env()
     await startup(test_dp, client)
 
     await client.send("/start")
 
-    msg = mm.last_message()
-    if msg.body.text != "Главное меню":
-        raise AssertionError(f"Unexpected text: {msg.body.text!r}")
-    if msg.body.keyboard is None:
+    message = message_manager.last_message()
+    if message.body.text != "Главное меню":
+        raise AssertionError(f"Unexpected text: {message.body.text!r}")
+    if message.body.keyboard is None:
         raise AssertionError("Keyboard is missing")
-    buttons = [btn.text for row in msg.body.keyboard.buttons for btn in row if isinstance(btn, CallbackButton)]
+    buttons = [
+        btn.text
+        for row in message.body.keyboard.buttons
+        for btn in row
+        if isinstance(btn, CallbackButton)
+    ]
     if "Подробнее" not in buttons:
         raise AssertionError(f"Button not found, got: {buttons}")
+
     print("demo_render_window: OK")
 
 
 async def demo_render_transition() -> None:
-    test_dp, client, mm = make_env()
+    test_dp, client, message_manager = make_env()
     await startup(test_dp, client)
 
     await client.send("/start")
-    menu_msg = mm.last_message()
-    mm.reset_history()
+    menu_message = message_manager.last_message()
+    message_manager.reset_history()
 
-    callback_id = await client.click(menu_msg, InlineButtonTextLocator("Подробнее"))
-    mm.assert_answered(callback_id)
+    callback_id = await client.click(menu_message, InlineButtonTextLocator("Подробнее"))
+    message_manager.assert_answered(callback_id)
 
-    detail_msg = mm.last_message()
+    detail_msg = message_manager.last_message()
     if detail_msg.body.text != "Детальная страница":
         raise AssertionError(f"Unexpected text: {detail_msg.body.text!r}")
+
     print("demo_render_transition: OK")
 
 

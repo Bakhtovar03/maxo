@@ -1,8 +1,6 @@
-from __future__ import annotations
-
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone as dt_timezone
 from enum import Enum
 from typing import (
     Any,
@@ -90,7 +88,7 @@ def prev_month_begin(offset: date) -> date:
     return month_begin(month_begin(offset) - timedelta(days=1))
 
 
-def get_today(tz: timezone) -> date:
+def get_today(tz: dt_timezone) -> date:
     return datetime.now(tz).date()
 
 
@@ -103,7 +101,7 @@ class OnDateSelected(Protocol):
     async def __call__(
         self,
         event: ChatEvent,
-        widget: ManagedCalendar,
+        widget: "ManagedCalendar",
         dialog_manager: DialogManager,
         date: date,
         /,
@@ -114,7 +112,7 @@ class OnDateSelected(Protocol):
 @dataclass(frozen=True)
 class CalendarUserConfig:
     firstweekday: int | None = None
-    timezone: timezone | None = None
+    timezone: dt_timezone | None = None
     min_date: date | None = None
     max_date: date | None = None
     month_columns: int | None = None
@@ -134,14 +132,14 @@ def _coalesce(a: T | None, b: T) -> T:
 @dataclass(frozen=True)
 class CalendarConfig:
     firstweekday: int = 0
-    timezone: timezone = datetime.now().astimezone().tzinfo
+    timezone: dt_timezone = datetime.now().astimezone().tzinfo
     min_date: date = date(1900, 1, 1)
     max_date: date = date(2100, 12, 31)
     month_columns: int = 3
     years_per_page: int = 20
     years_columns: int = 5
 
-    def merge(self, other: CalendarUserConfig) -> CalendarConfig:
+    def merge(self, other: CalendarUserConfig) -> "CalendarConfig":
         return CalendarConfig(
             firstweekday=_coalesce(other.firstweekday, self.firstweekday),
             timezone=_coalesce(other.timezone, self.timezone),
@@ -818,7 +816,7 @@ class Calendar(Keyboard):
         data = self.get_widget_data(manager, {})
         data["current_scope"] = new_scope.value
 
-    def managed(self, manager: DialogManager) -> ManagedCalendar:
+    def managed(self, manager: DialogManager) -> "ManagedCalendar":
         return ManagedCalendar(self, manager)
 
     async def _handle_scope_months(

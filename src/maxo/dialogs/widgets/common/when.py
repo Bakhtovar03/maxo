@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from abc import abstractmethod
 from typing import Protocol
 
@@ -12,7 +10,7 @@ class Predicate(Protocol):
     def __call__(
         self,
         data: dict,
-        widget: Whenable,
+        widget: "Whenable",
         dialog_manager: DialogManager,
         /,
     ) -> bool:
@@ -33,7 +31,7 @@ WhenCondition = str | DialogMagic | Predicate | None
 def new_when_field(fieldname: str) -> Predicate:
     def when_field(
         data: dict,
-        widget: Whenable,
+        widget: "Whenable",
         manager: DialogManager,
     ) -> bool:
         return bool(data.get(fieldname))
@@ -44,7 +42,7 @@ def new_when_field(fieldname: str) -> Predicate:
 def new_when_magic(f: DialogMagic) -> Predicate:
     def when_magic(
         data: dict,
-        widget: Whenable,
+        widget: "Whenable",
         manager: DialogManager,
     ) -> bool:
         return f.resolve(data)
@@ -52,7 +50,7 @@ def new_when_magic(f: DialogMagic) -> Predicate:
     return when_magic
 
 
-def true_condition(data: dict, widget: Whenable, manager: DialogManager) -> bool:
+def true_condition(data: dict, widget: "Whenable", manager: DialogManager) -> bool:
     return True
 
 

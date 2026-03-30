@@ -1,18 +1,14 @@
-from __future__ import annotations
-
 import importlib
 from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING
+
+from diagrams import Node
 
 from maxo.dialogs.dialog import Dialog
 from maxo.dialogs.setup import collect_dialogs
 from maxo.dialogs.widgets.kbd import Back, Cancel, Group, Next, Start, SwitchTo
 from maxo.fsm import State
 from maxo.routing.interfaces import BaseRouter
-
-if TYPE_CHECKING:
-    from diagrams import Node
 
 ICON_PATH = (Path(__file__).parent / "icon.png").as_posix()
 
@@ -141,5 +137,9 @@ def render_transitions(
                 _walk_keyboard(nodes, dialog, starts, state, [window.keyboard])
                 if window.preview_add_transitions:
                     _walk_keyboard(
-                        nodes, dialog, starts, state, window.preview_add_transitions,
+                        nodes,
+                        dialog,
+                        starts,
+                        state,
+                        window.preview_add_transitions,
                     )
