@@ -4,6 +4,7 @@ from datetime import datetime
 
 from maxo.enums import TextFormat
 from maxo.omit import Omittable, Omitted
+from maxo.types.attachments import MediaAttachmentsRequests
 from maxo.types.buttons import InlineButtons
 from maxo.types.chat import Chat
 from maxo.types.chat_members_list import ChatMembersList
@@ -29,7 +30,7 @@ class ChatMethodsFacade(AttachmentsFacade, ABC):
         format: TextFormat | None = None,
         disable_link_preview: Omittable[bool] = Omitted(),
         keyboard: Sequence[Sequence[InlineButtons]] | None = None,
-        media: Sequence[InputFile] | None = None,
+        media: Sequence[InputFile | MediaAttachmentsRequests] | None = None,
     ) -> Message:
         attachments = await self.build_attachments(
             base=[],

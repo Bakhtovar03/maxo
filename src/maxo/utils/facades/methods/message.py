@@ -3,6 +3,7 @@ from collections.abc import Sequence
 
 from maxo.enums import MessageLinkType, TextFormat
 from maxo.omit import Omittable, Omitted
+from maxo.types import MediaAttachmentsRequests
 from maxo.types.buttons import InlineButtons
 from maxo.types.chat import Chat
 from maxo.types.chat_members_list import ChatMembersList
@@ -36,7 +37,7 @@ class MessageMethodsFacade(AttachmentsFacade, ABC):
         format: TextFormat | None = None,
         disable_link_preview: Omittable[bool] = Omitted(),
         keyboard: Sequence[Sequence[InlineButtons]] | None = None,
-        media: Sequence[InputFile] | None = None,
+        media: Sequence[InputFile | MediaAttachmentsRequests] | None = None,
     ) -> Message:
         recipient = self.message.recipient
         chat_id, user_id = calculate_chat_id_and_user_id(
@@ -98,7 +99,11 @@ class MessageMethodsFacade(AttachmentsFacade, ABC):
 
     async def send_media(
         self,
-        media: InputFile | Sequence[InputFile],
+        media: (
+            InputFile
+            | MediaAttachmentsRequests
+            | Sequence[InputFile | MediaAttachmentsRequests]
+        ),
         text: str | None = None,
         keyboard: Sequence[Sequence[InlineButtons]] | None = None,
         notify: Omittable[bool] = True,
@@ -106,7 +111,7 @@ class MessageMethodsFacade(AttachmentsFacade, ABC):
         link: NewMessageLink | None = None,
         disable_link_preview: Omittable[bool] = Omitted(),
     ) -> Message:
-        if isinstance(media, InputFile):
+        if isinstance(media, (InputFile, MediaAttachmentsRequests)):
             media = (media,)
 
         return await self.send_message(
@@ -123,7 +128,7 @@ class MessageMethodsFacade(AttachmentsFacade, ABC):
         self,
         text: str | None = None,
         keyboard: Sequence[Sequence[InlineButtons]] | None = None,
-        media: Sequence[InputFile] | None = None,
+        media: Sequence[InputFile | MediaAttachmentsRequests] | None = None,
         link: NewMessageLink | None = None,
         notify: bool = True,
         format: TextFormat | None = None,
