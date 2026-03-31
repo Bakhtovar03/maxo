@@ -1,5 +1,6 @@
 import asyncio
 from collections.abc import Sequence
+from typing import TypeAlias
 
 from unihttp.http import UploadFile
 
@@ -23,13 +24,15 @@ from maxo.types import (
 from maxo.utils.facades.methods.bot import BotMethodsFacade
 from maxo.utils.upload_media import InputFile
 
+MediaInput: TypeAlias = InputFile | MediaAttachmentsRequests
+
 
 class AttachmentsFacade(BotMethodsFacade):
     async def build_attachments(
         self,
         base: Sequence[AttachmentsRequests],
         keyboard: Sequence[Sequence[InlineButtons]] | None = None,
-        files: Sequence[InputFile | MediaAttachmentsRequests] | None = None,
+        files: Sequence[MediaInput] | None = None,
     ) -> Sequence[AttachmentsRequests]:
         attachments = list(base)
 
@@ -47,7 +50,7 @@ class AttachmentsFacade(BotMethodsFacade):
 
     async def _build_media(
         self,
-        files: Sequence[InputFile | MediaAttachmentsRequests],
+        files: Sequence[MediaInput],
     ) -> list[MediaAttachmentsRequests]:
         attachments: list[MediaAttachmentsRequests | None] = [None] * len(files)
         files_to_upload: list[InputFile] = []

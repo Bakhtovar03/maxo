@@ -10,7 +10,7 @@ from maxo.types.chat_members_list import ChatMembersList
 from maxo.types.message import Message
 from maxo.types.new_message_link import NewMessageLink
 from maxo.types.simple_query_result import SimpleQueryResult
-from maxo.utils.facades.methods.attachments import AttachmentsFacade
+from maxo.utils.facades.methods.attachments import AttachmentsFacade, MediaInput
 from maxo.utils.helpers.calculating import calculate_chat_id_and_user_id
 from maxo.utils.upload_media import InputFile
 
@@ -37,7 +37,7 @@ class MessageMethodsFacade(AttachmentsFacade, ABC):
         format: TextFormat | None = None,
         disable_link_preview: Omittable[bool] = Omitted(),
         keyboard: Sequence[Sequence[InlineButtons]] | None = None,
-        media: Sequence[InputFile | MediaAttachmentsRequests] | None = None,
+        media: Sequence[MediaInput] | None = None,
     ) -> Message:
         recipient = self.message.recipient
         chat_id, user_id = calculate_chat_id_and_user_id(
@@ -99,11 +99,7 @@ class MessageMethodsFacade(AttachmentsFacade, ABC):
 
     async def send_media(
         self,
-        media: (
-            InputFile
-            | MediaAttachmentsRequests
-            | Sequence[InputFile | MediaAttachmentsRequests]
-        ),
+        media: MediaInput | Sequence[MediaInput],
         text: str | None = None,
         keyboard: Sequence[Sequence[InlineButtons]] | None = None,
         notify: Omittable[bool] = True,
@@ -128,7 +124,7 @@ class MessageMethodsFacade(AttachmentsFacade, ABC):
         self,
         text: str | None = None,
         keyboard: Sequence[Sequence[InlineButtons]] | None = None,
-        media: Sequence[InputFile | MediaAttachmentsRequests] | None = None,
+        media: Sequence[MediaInput] | None = None,
         link: NewMessageLink | None = None,
         notify: bool = True,
         format: TextFormat | None = None,
