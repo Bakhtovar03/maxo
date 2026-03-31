@@ -74,7 +74,6 @@ class BaseObserver(Observer[_UpdateT, _HandlerT, _HandlerFnT], ABC):
         return await self._filter(ctx["update"], ctx)
 
     async def handler_lookup(self, ctx: Ctx) -> Any:
-
         for handler in self._handlers:
             if await handler.execute_filter(ctx):
                 try:
