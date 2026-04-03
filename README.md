@@ -38,14 +38,14 @@
 
 Через `pip`:
 ```commandline
-pip install maxo==0.5.1
+pip install maxo==0.5.2
 ```
 
 В `pyproject.toml`:
 ```toml
 [project]
 dependencies = [
-    "maxo==0.5.1",
+    "maxo==0.5.2",
 ]
 ```
 
