@@ -24,6 +24,7 @@ from maxo.errors import (
     MaxBotTooManyRequestsError,
     MaxBotUnauthorizedError,
     MaxBotUnknownServerError,
+    MaxBotUnsupportedMediaTypeError,
 )
 from maxo.types import AttachmentPayload
 
@@ -62,9 +63,15 @@ class MaxApiClient(AiohttpAsyncClient):
 
     def handle_error(self, response: HTTPResponse, method: BaseMethod[Any]) -> Never:
         # ruff: noqa: PLR2004
-        code: str = response.data.get("code") or response.data.get("error_code", "")
-        error: str = response.data.get("error") or response.data.get("error_data", "")
-        message: str = response.data.get("message", "")
+        data = response.data
+        if isinstance(data, dict):
+            code: str = data.get("code") or data.get("error_code", "")
+            error: str = data.get("error") or data.get("error_data", "")
+            message: str = data.get("message", "")
+        else:
+            code = ""
+            error = ""
+            message = data
 
         if response.status_code == 400:
             raise MaxBotBadRequestError(code, error, message)
@@ -76,6 +83,8 @@ class MaxApiClient(AiohttpAsyncClient):
             raise MaxBotNotFoundError(code, error, message)
         if response.status_code == 405:
             raise MaxBotMethodNotAllowedError(code, error, message)
+        if response.status_code == 415:
+            raise MaxBotUnsupportedMediaTypeError(code, error, message)
         if response.status_code == 429:
             raise MaxBotTooManyRequestsError(code, error, message)
         if response.status_code == 500:

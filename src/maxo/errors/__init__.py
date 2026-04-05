@@ -8,6 +8,7 @@ from maxo.errors.api import (
     MaxBotTooManyRequestsError,
     MaxBotUnauthorizedError,
     MaxBotUnknownServerError,
+    MaxBotUnsupportedMediaTypeError,
     RetvalReturnedServerException,
 )
 from maxo.errors.base import MaxoError
@@ -26,6 +27,7 @@ __all__ = (
     "MaxBotTooManyRequestsError",
     "MaxBotUnauthorizedError",
     "MaxBotUnknownServerError",
+    "MaxBotUnsupportedMediaTypeError",
     "MaxoError",
     "RetvalReturnedServerException",
 )
