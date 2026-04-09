@@ -123,7 +123,7 @@ class BotClient:
         )
 
     async def send(self, text: str, reply_to: Message | None = None) -> Any:
-        return await self.dp.feed_max_update(
+        return await self.dp.feed_update(
             MaxoUpdate(
                 update=MessageCreated(
                     message=self._new_message(text, reply_to),
