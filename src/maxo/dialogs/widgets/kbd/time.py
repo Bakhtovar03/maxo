@@ -96,9 +96,9 @@ class TimeSelect(Keyboard):
         value: time | None,
     ) -> None:
         if value is None:
-            self.set_widget_data(manager, [None, None])
+            self.set_widget_data(manager, (None, None))
         else:
-            self.set_widget_data(manager, [value.hour, value.minute])
+            self.set_widget_data(manager, (value.hour, value.minute))
         await self.on_value_changed.process_event(
             event,
             self.managed(manager),
@@ -211,7 +211,7 @@ class TimeSelect(Keyboard):
         else:
             raise ValueError(f"Unknown callback format {data!r}")
 
-        self.set_widget_data(manager, [hour, minute])
+        self.set_widget_data(manager, (hour, minute))
         await self.on_value_changed.process_event(
             manager.event,
             self.managed(manager),

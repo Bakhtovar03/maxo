@@ -1,6 +1,6 @@
 from asyncio import Future
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from maxo import Bot
 from maxo.fsm import State
@@ -9,6 +9,10 @@ from maxo.types import Recipient, User
 
 from .modes import ShowMode, StartMode
 from .stack import AccessSettings
+
+if TYPE_CHECKING:
+    from maxo.dialogs.api.protocols.manager import DialogManager
+
 
 DIALOG_EVENT_NAME = "aiogd_update"
 
@@ -43,5 +47,5 @@ class DialogSwitchEvent(DialogUpdateEvent):
 
 
 class DialogFgEvent(DialogUpdateEvent):
-    entered: Future
-    exited: Future
+    entered: Future["DialogManager"]
+    exited: Future[None]

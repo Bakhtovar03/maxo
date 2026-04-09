@@ -10,12 +10,12 @@ from maxo.types import MaxoType
 async def test_render_time_select(mock_manager) -> None:
     select = TimeSelect("x")
 
-    keyboard = await select.render_keyboard(
+    keyboard_before = await select.render_keyboard(
         data={},
         manager=mock_manager,
     )
 
-    assert len(keyboard) == 8
+    assert len(keyboard_before) == 8
 
     await select.set_value(
         MaxoType(),
@@ -23,9 +23,10 @@ async def test_render_time_select(mock_manager) -> None:
         datetime.time(0, 10),
     )
 
-    keyboard = await select.render_keyboard(
+    keyboard_after = await select.render_keyboard(
         data={},
         manager=mock_manager,
     )
 
-    assert len(keyboard) == 8
+    assert len(keyboard_after) == 8
+    assert keyboard_after != keyboard_before

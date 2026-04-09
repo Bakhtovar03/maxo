@@ -1,6 +1,7 @@
 import asyncio
 from asyncio import Task
 from contextvars import copy_context
+from typing import Any
 
 from maxo import Bot, Dispatcher
 from maxo.dialogs.api.entities import DialogUpdateEvent
@@ -21,7 +22,7 @@ class Updater:
             context=copy_context(),
         )
 
-    def notify_task(self, bot: Bot, update: DialogUpdateEvent) -> Task:
+    def notify_task(self, bot: Bot, update: DialogUpdateEvent) -> Task[Any]:
         return asyncio.create_task(self._process_update(update, bot))
 
     async def _process_update(self, update: DialogUpdateEvent, bot: Bot) -> None:

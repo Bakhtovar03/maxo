@@ -224,7 +224,8 @@ class BgManager(BaseDialogManager):
             raise
         else:
             event.exited.set_result(None)
-        await task
+        finally:
+            await task
 
 
 class BgManagerFactoryImpl(BgManagerFactory):

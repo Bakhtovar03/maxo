@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any
 
 import pytest
@@ -44,8 +45,8 @@ async def start_for_second_user_via_bg(
     event: Any,
     dialog_manager: DialogManager,
 ) -> None:
-    async with dialog_manager.bg(user_id=2, chat_id=-1).fg() as manager:
-        await manager.start(MainSG.start, mode=StartMode.RESET_STACK)
+    manager = dialog_manager.bg(user_id=2, chat_id=-1)
+    await manager.start(MainSG.start, mode=StartMode.RESET_STACK)
 
 
 @pytest.fixture
@@ -116,6 +117,7 @@ async def test_start_in_foreground_for_another_user_via_bg(
     await dp.feed_signal(AfterStartup(), client.bot)
 
     await client.send("/start")
+    await asyncio.sleep(0.1)
     window_message = message_manager.one_message()
     assert window_message.body.text == "stub"
     message_manager.reset_history()
