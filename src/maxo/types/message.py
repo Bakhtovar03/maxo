@@ -8,6 +8,7 @@ from maxo.types.message_body import MessageBody
 from maxo.types.message_stat import MessageStat
 from maxo.types.recipient import Recipient
 from maxo.types.user import User
+from maxo.utils.urls import id_to_message_url
 
 
 class Message(MaxoType):
@@ -78,4 +79,24 @@ class Message(MaxoType):
         raise AttributeIsEmptyError(
             obj=self,
             attr="url",
+        )
+
+    @property
+    def generated_url(self) -> str | None:
+        if not is_defined(self.recipient.chat_id):
+            return None
+
+        return id_to_message_url(
+            sequence_id=self.body.seq,
+            chat_id=self.recipient.chat_id,
+        )
+
+    @property
+    def unsafe_generated_url(self) -> str | None:
+        if is_defined(self.generated_url):
+            return self.generated_url
+
+        raise AttributeIsEmptyError(
+            obj=self,
+            attr="generated_url",
         )
