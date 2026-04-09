@@ -50,6 +50,8 @@ BUTTON_SELECTED_TEXT = Format("[{value}]")
 
 
 class TimeSelect(Keyboard):
+    """Виджет выбора времени с отдельными клавиатурами для часов и минут."""
+
     def __init__(
         self,
         id: str,
@@ -66,6 +68,12 @@ class TimeSelect(Keyboard):
         minute_width: int = 6,
     ) -> None:
         super().__init__(id, when)
+        if minute_precision <= 0:
+            raise ValueError("minute_precision must be greater than 0")
+        if hour_width <= 0:
+            raise ValueError("hour_width must be greater than 0")
+        if minute_width <= 0:
+            raise ValueError("minute_width must be greater than 0")
         self.hour_header = hour_header
         self.minute_header = minute_header
         self.button_text = button_text
@@ -81,9 +89,10 @@ class TimeSelect(Keyboard):
         self,
         raw_value: tuple[int | None, int | None],
     ) -> time | None:
-        if None in raw_value:
+        hour, minute = raw_value
+        if hour is None or minute is None:
             return None
-        return time(raw_value[0], raw_value[1])
+        return time(hour, minute)
 
     def get_value(self, manager: DialogManager) -> time | None:
         raw_value = self.get_widget_data(manager, (None, None))
@@ -195,7 +204,7 @@ class TimeSelect(Keyboard):
         if data.startswith("h"):
             hour = int(data[1:])
             await self.on_hour_click.process_event(
-                manager.event,
+                callback,
                 self.managed(manager),
                 manager,
                 hour,
@@ -203,7 +212,7 @@ class TimeSelect(Keyboard):
         elif data.startswith("m"):
             minute = int(data[1:])
             await self.on_minute_click.process_event(
-                manager.event,
+                callback,
                 self.managed(manager),
                 manager,
                 minute,
@@ -213,7 +222,7 @@ class TimeSelect(Keyboard):
 
         self.set_widget_data(manager, (hour, minute))
         await self.on_value_changed.process_event(
-            manager.event,
+            callback,
             self.managed(manager),
             manager,
             self._value_from_raw((hour, minute)),

@@ -92,7 +92,7 @@ class Message(MaxoType):
         )
 
     @property
-    def unsafe_generated_url(self) -> str | None:
+    def unsafe_generated_url(self) -> str:
         if is_defined(self.generated_url):
             return self.generated_url
 
