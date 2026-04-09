@@ -32,8 +32,8 @@ def url_to_message_id(url: str) -> int:
     base64_std = base64_url.replace("-", "+").replace("_", "/")
 
     # Восстанавливаем padding
-    padding = 8 - (len(base64_std) % 8)
-    if padding < 8:  # noqa: PLR2004
+    padding = (4 - len(base64_std) % 4) % 4
+    if padding:
         base64_std += "=" * padding
 
     # Декодируем
