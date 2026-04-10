@@ -24,11 +24,7 @@ class MessageMethodsFacade(AttachmentsFacade, ABC):
     @property
     def chat_id(self) -> int:
         return self.message.recipient.chat_id
-        
-    @property
-    def user_id(self) -> int:
-        return self.message.recipient.user_id
-        
+             
     async def delete_message(self) -> SimpleQueryResult:
         message_id = self.message.body.mid
         return await self.bot.delete_message(message_id=message_id)
