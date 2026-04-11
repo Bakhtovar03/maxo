@@ -62,5 +62,7 @@ class MessageCallback(MaxUpdate):
     def user(self) -> User:
         return self.callback.user
 
+    from_user = user  # Подражание aiogram
+
 
 CallbackQuery: TypeAlias = MessageCallback  # Подражание aiogram

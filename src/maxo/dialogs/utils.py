@@ -129,6 +129,9 @@ def intent_payload(
     return prefix + payload
 
 
+intent_callback_data = intent_payload  # Подражание aiogram-dialogs
+
+
 def add_intent_id(keyboard: RawKeyboard, intent_id: str) -> None:
     for row in keyboard:
         for button in row:
