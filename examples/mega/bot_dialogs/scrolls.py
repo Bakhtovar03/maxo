@@ -199,11 +199,11 @@ list_scroll_window = Window(
     List(
         Format("{pos}. {item[0]}"),
         items="products",
-        id="list_scroll",
+        id=ID_LIST_SCROLL,
         page_size=10,
     ),
     NumberedPager(
-        scroll="list_scroll",
+        scroll=ID_LIST_SCROLL,
     ),
     SCROLLS_MAIN_MENU_BUTTON,
     getter=product_getter,

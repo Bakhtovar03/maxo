@@ -31,7 +31,7 @@ async def data_getter(
     radio = cast(ManagedRadio, dialog_manager.find(EMOJI_ID))
     return {
         "option": checkbox.is_checked(),
-        "emoji": radio.get_checked(),
+        "emoji": radio.get_checked() or "-",
     }
 
 
