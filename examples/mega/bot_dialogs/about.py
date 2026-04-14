@@ -15,7 +15,9 @@ from . import states
 async def metadata_getter(**__: Any) -> dict[str, Any]:
     metadata = importlib.metadata.metadata("maxo")
     urls = [
-        url.split(",", maxsplit=1) for url in metadata.get_all("Project-Url") if url
+        url.split(",", maxsplit=1)
+        for url in (metadata.get_all("Project-Url") or ())
+        if url
     ]
     return {
         "metadata": metadata,
