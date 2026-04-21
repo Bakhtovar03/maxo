@@ -37,10 +37,11 @@ class MessageCreated(MaxUpdate):
     def text(self) -> str | None:
         return self.message.body.text
         
-    @property
+    @property    
     def user_id(self) -> int | None:
         if is_defined(self.message.sender):
             return self.message.sender.user_id
-        return Nonee
+        return None
+
 
     
