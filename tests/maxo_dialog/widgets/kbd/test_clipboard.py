@@ -19,4 +19,3 @@ async def test_render_clipboard(mock_manager: DialogManager) -> None:
     assert isinstance(button, ClipboardButton)
     assert button.text == "Copy this text"
     assert button.payload == "Text to be copied to clipboard"
-

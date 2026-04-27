@@ -55,9 +55,13 @@ class Keyboard(Actionable, Whenable, KeyboardWidget):
         """Create callback data for only button in widget."""
         return self.widget_id
 
+    _own_callback_data = _own_payload  # Подражание aiogram-dialog
+
     def _item_payload(self, data: str | int) -> str:
         """Create callback data for widgets button if multiple."""
         return f"{self.callback_prefix()}{data}"
+
+    _item_callback_data = _item_payload  # Подражание aiogram-dialog
 
     async def process_callback(
         self,

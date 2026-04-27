@@ -29,7 +29,7 @@
 
 <p align="center">
     <a href="https://maxo.readthedocs.io"><b>Документация</b></a><br><br>
-    <a href="https://github.com/IvanKirpichnikov/maxo">Оригинальный репозиторий</a><br>
+    Интерфейс основан на <a href="https://github.com/aiogram/aiogram">aiogram</a><br>
     <a href="./src/maxo/dialogs">maxo/dialogs</a> сделано из <a href="https://github.com/Tishka17/aiogram_dialog">aiogram_dialog</a><br>
     <a href="./src/maxo/transport/webhook">maxo/transport/webhook</a> сделано из <a href="https://github.com/m-xim/aiogram-webhook">aiogram-webhook</a><br>
 </p>
@@ -38,14 +38,14 @@
 
 Через `pip`:
 ```commandline
-pip install maxo==0.5.2
+pip install maxo==0.5.3
 ```
 
 В `pyproject.toml`:
 ```toml
 [project]
 dependencies = [
-    "maxo==0.5.2",
+    "maxo==0.5.3",
 ]
 ```
 

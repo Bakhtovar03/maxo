@@ -1,9 +1,9 @@
 from .base import Keyboard
 from .button import (
     Button,
+    Clipboard,
     Url,
     WebApp,
-    Clipboard,
 )
 from .calendar_kbd import (
     Calendar,
@@ -44,12 +44,12 @@ __all__ = (
     "Back",
     "Button",
     "Calendar",
-    "Clipboard",
     "CalendarConfig",
     "CalendarScope",
     "CalendarUserConfig",
     "Cancel",
     "Checkbox",
+    "Clipboard",
     "Column",
     "Counter",
     "CurrentPage",
